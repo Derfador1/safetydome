@@ -4,8 +4,29 @@
 	<title>Safetydome Fighters</title>
 </head>
 <body>
+	<table>
+			<thead align="Left">
+				<tr>
+					<th>Name</th>
+					<th>Type</th>
+					<th>Species</th>
+					<th>Base Atk</th>
+					<th>Base Defense</th>
+					<th>Base Hp</th>
+				</tr>
+			</thead>
 
-	<p>{{ row }}!</p>
+			<tbody>
+				<tr>
+					<td>{{ row[1] }}</td>
+					<td>{{ row[2] }}</td>
+					<td>{{ row[3] }}</td>
+					<td>{{ row[4] }}</td>
+					<td>{{ row[5] }}</td>
+					<td>{{ row[6] }}</td>
+				</tr>
+			<tbody>
+	</table>
 
 </body>
 </html>
