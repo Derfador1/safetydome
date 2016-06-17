@@ -14,6 +14,15 @@ class Combatant():
 		self.name = name
 		self.species = species
 
+class Fight():
+	def __init__(self, one_id, two_id, one_name, two_name, winner, ids):
+		self.one_id = one_id
+		self.two_id = two_id
+		self.one_name = one_name
+		self.two_name = two_name
+		self.winner = winner
+		self.id = ids
+
 @app.route('/')
 def main():
 	return render_template('index.html')
@@ -43,7 +52,16 @@ def results():
 
 @app.route('/battle')
 def battle():
-	return render_template('battle.html')
+	cur.execute('''select combatant_one, combatant_two,
+			(select name from combatant where combatant_one = combatant.id),
+			(select name from combatant where combatant_two = combatant.id),
+			winner, fight.id 
+			from fight, combatant''')
+	rows = list(cur.fetchall())
+	fight = []
+	for row in rows:
+		fight.append(Fight(row[0], row[1], row[2], row[3], row[4], row[5]))
+	return render_template('battle.html', fights=fight)
 
 if __name__ == '__main__':
-	app.run(debug=True, port=8054)
+	app.run(port=8054)
