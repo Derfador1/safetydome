@@ -4,7 +4,9 @@ import  psycopg2
 conn = psycopg2.connect(dbname='safetydome', user='flask', password='flask', host='localhost')
 cur = conn.cursor()
 
-from flask import Flask, render_template
+from flask import Flask, render_template, abort
+import re
+import os
 
 app = Flask(__name__)
 
@@ -35,13 +37,19 @@ def main():
 
 @app.route('/combatant/<identifier>')
 def combatants_id(identifier=None):
-	cur.execute('''select combatant.id, combatant.name, species.type, species.name, species.base_atk, species.base_dfn, species.base_hp
-			from combatant, species where combatant.species_id = species.id;''')
-	rows = list(cur.fetchall())
-	for row in rows:
-		if row[0] == int(identifier):
-			return render_template('combatants_id.html', row=row)
-			break
+	if identifier:
+		if not re.search('^-?[0-9]+$', identifier):
+			abort(404)
+
+		cur.execute('''select combatant.id, combatant.name, species.type, species.name, species.base_atk, species.base_dfn, 					species.base_hp
+				from combatant, species where combatant.species_id = species.id;''')
+		rows = list(cur.fetchall())
+		for row in rows:
+			if row[0] == int(identifier):
+				return render_template('combatants_id.html', row=row)
+				break
+	else:
+		abort(404)
 
 @app.route('/combatant')
 def combatants():
@@ -67,14 +75,23 @@ def battle():
 
 @app.route('/battle/<id1>-<id2>')
 def battle_detail(id1=None, id2=None):
-	cur.execute('''select * from fight''')
+	if id1 and id2:
+		if not re.search('^-?[0-9]+$', id1):
+			abort(404)
 
-	rows = list(cur.fetchall())
+		if not re.search('^-?[0-9]+$', id2):
+			abort(404)
 
-	for row in rows:
-		if row[0] == int(id1) and row[1] == int(id2):
-			return render_template('battle_detail.html', details=row)
-			break
+		cur.execute('''select * from fight''')
+
+		rows = list(cur.fetchall())
+
+		for row in rows:
+			if row[0] == int(id1) and row[1] == int(id2):
+				return render_template('battle_detail.html', details=row)
+				break
+	else:
+		abort(404)
 
 @app.route('/results')
 def results():
