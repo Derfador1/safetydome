@@ -17,7 +17,7 @@
 			{% for combatant in combatants %}
 			<tr>
 				<td>{{ combatant[3] }}</td>
-				<td><a href="/combatant/{{ combatant[0] }}">{{ combatant[2] }}</a></td>
+				<td><a href="/combatant/{{ combatant.id }}">{{ combatant[2] }}</a></td>
 				<td>{{ combatant[1] }}</td>
 			</tr>
 			{% endfor %}

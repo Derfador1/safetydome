@@ -5,7 +5,7 @@
 </head>
 <body>
 	<table>
-		<thead align="Left>
+		<thead align="Left">
 			<tr>
 				<th>Fighter 1</th>
 				<th>Fighter 2</th>
@@ -20,7 +20,7 @@
 				<td><a href="/combatant/{{ fight.one_id }}">{{ fight.one_name }}</a> vs.</td>
 				<td><a href="/combatant/{{ fight.two_id }}">{{ fight.two_name }}</a></td>
 				<td>{{ fight.winner }}</td>
-				<td><a href="/battle/{{ fight.id }}">{{ fight.id }}</td>
+				<td><a href="/battle/{{ fight.one_id-fight.two_id }}">{{ fight.id }}</td>
 			</tr>
 			{% endfor %}
 		<tbody>
