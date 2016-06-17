@@ -80,17 +80,18 @@ def battle_detail(id1=None, id2=None):
 def results():
 	#solution found with help from Samuels
 	#https://github.com/ExSickness/safetydome/blob/master/app.py
-
 	fighters = []
 
 	cur.execute('''select count(*) from combatant;''')
 	
-	rows = cur.fetchone()[0]
+	num_of_combatants = cur.fetchone()[0]
 	
-	for i in range(1, rows):
+	for i in range(1, num_of_combatants+1):
 		total_wins = 0
 		cur.execute("select * from fight where combatant_one = %s and winner = 'One'", (i,))
 		total_wins = len(cur.fetchall())
+		cur.execute("select * from fight where combatant_two = %s and winner = 'Two'", (i,))
+		total_wins+= len(cur.fetchall())
 		cur.execute("SELECT name FROM combatant WHERE id=%s", (i,))
 		combatant_name = cur.fetchone()[0]
 		fighters.append( [i, total_wins, combatant_name] )
@@ -100,7 +101,6 @@ def results():
 		fighters[i].append(i+1)
 
 	return(render_template('results.html',combatants=fighters))
-
 
 if __name__ == '__main__':
 	app.run(debug=True, port=8054)
