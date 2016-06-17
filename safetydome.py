@@ -22,6 +22,12 @@ class Fight():
 		self.two_name = two_name
 		self.winner = winner
 		self.id = ids
+class Results():
+	def __init__(self, name, ids, wins, rank):
+		self.name = name
+		self.id = ids
+		self.wins = wins
+		self.rank = rank
 
 @app.route('/')
 def main():
@@ -46,10 +52,6 @@ def combatants():
 		combatant.append(Combatant(row[0], row[1], row[2]))
 	return render_template('combatants.html', combatants=combatant)
 
-@app.route('/results')
-def results():
-	return render_template('results.html')
-
 @app.route('/battle')
 def battle():
 	cur.execute('''select combatant_one, combatant_two,
@@ -63,5 +65,42 @@ def battle():
 		fight.append(Fight(row[0], row[1], row[2], row[3], row[4], row[5]))
 	return render_template('battle.html', fights=fight)
 
+@app.route('/battle/<id1>-<id2>')
+def battle_detail(id1=None, id2=None):
+	cur.execute('''select * from fight''')
+
+	rows = list(cur.fetchall())
+
+	for row in rows:
+		if row[0] == int(id1) and row[1] == int(id2):
+			return render_template('battle_detail.html', details=row)
+			break
+
+@app.route('/results')
+def results():
+	#solution found with help from Samuels
+	#https://github.com/ExSickness/safetydome/blob/master/app.py
+
+	fighters = []
+
+	cur.execute('''select count(*) from combatant;''')
+	
+	rows = cur.fetchone()[0]
+	
+	for i in range(1, rows):
+		total_wins = 0
+		cur.execute("select * from fight where combatant_one = %s and winner = 'One'", (i,))
+		total_wins = len(cur.fetchall())
+		cur.execute("SELECT name FROM combatant WHERE id=%s", (i,))
+		combatant_name = cur.fetchone()[0]
+		fighters.append( [i, total_wins, combatant_name] )
+
+	fighters.sort(key=lambda x: x[1], reverse=True)
+	for i in range(len(fighters)):
+		fighters[i].append(i+1)
+
+	return(render_template('results.html',combatants=fighters))
+
+
 if __name__ == '__main__':
-	app.run(port=8054)
+	app.run(debug=True, port=8054)
