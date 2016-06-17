@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Safetydome Fighters</title>
+</head>
+<body>
+	<table>
+		<thead>
+			<tr>
+				<th>Combatant</th>
+				<th>Species</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{% for combatant in combatants %}
+			<tr>
+				<td><a href="/combatant/{{ combatant.id }}">{{ combatant.name }}</a></td>
+				<td>{{ combatant.species }}</td>
+			</tr>
+			{% endfor %}
+			<tbody>
+	</table>
+
+</body>
+</html>

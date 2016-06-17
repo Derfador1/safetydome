@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Safetydome Fighters</title>
+</head>
+<body>
+
+	<p>Hello {{ identifier }}!</p>
+
+</body>
+</html>
